@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManager;
  * da nossa API
  */
 $container = new \Slim\Container();
-$isDevMode = true;
+$isDevMode = false;
 /**
  * Diretório de Entidades e Metadata do Doctrine
  */
