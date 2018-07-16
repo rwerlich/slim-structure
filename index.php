@@ -3,11 +3,13 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use App\Models\Entity\Book;
 require 'bootstrap.php';
+
 /**
  * Lista de todos os livros
- * @request curl -X GET http://localhost:8000/book
+ * @request curl -X GET http://localhost/slim-structure/book
  */
 $app->get('/book', function (Request $request, Response $response) use ($app) {
+   
     $entityManager = $this->get('em');
     $booksRepository = $entityManager->getRepository('App\Models\Entity\Book');
     $books = $booksRepository->findAll();
@@ -17,7 +19,7 @@ $app->get('/book', function (Request $request, Response $response) use ($app) {
 });
 /**
  * Retornando mais informações do livro informado pelo id
- * @request curl -X GET http://localhost:8000/book/1
+ * @request curl -X GET http://localhost/slim-structure/book/1
  */
 $app->get('/book/{id}', function (Request $request, Response $response) use ($app) {
     $route = $request->getAttribute('route');
@@ -31,7 +33,8 @@ $app->get('/book/{id}', function (Request $request, Response $response) use ($ap
 });
 /**
  * Cadastra um novo <Livro></Livro>
- * @request curl -X POST http://localhost:8000/book -H "Content-type: application/json" -d '{"name":"O Oceano no Fim do Caminho", "author":"Neil Gaiman"}'
+ * No windows não aceita aspa simples
+ * @request curl -X POST -d "{\"name\":\"O Oceano no Fim do Caminho\", \"author\":\"Neil Gaiman\"}" -H "Content-type: application/json" http://localhost/slim-structure/book
  */
 $app->post('/book', function (Request $request, Response $response) use ($app) {
     $params = (object) $request->getParams();
@@ -56,7 +59,7 @@ $app->post('/book', function (Request $request, Response $response) use ($app) {
 });
 /**
  * Atualiza os dados de um livro
- * @request curl -X PUT http://localhost:8000/book/14 -H "Content-type: application/json" -d '{"name":"Deuses Americanos", "author":"Neil Gaiman"}'
+ * @request curl -X PUT http://localhost/slim-structure/book/1 -H "Content-type: application/json" -d "{\"name\":\"Deuses Americanos\", \"author\":\"Neil Gaiman\"}"
  */
 $app->put('/book/{id}', function (Request $request, Response $response) use ($app) {
     /**
@@ -87,7 +90,7 @@ $app->put('/book/{id}', function (Request $request, Response $response) use ($ap
 });
 /**
  * Deleta o livro informado pelo ID
- * @request curl -X DELETE http://localhost:8000/book/3
+ * @request curl -X DELETE http://localhost/slim-structure/book/3
  */
 $app->delete('/book/{id}', function (Request $request, Response $response) use ($app) {
     /**
