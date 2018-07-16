@@ -9,7 +9,6 @@ require 'bootstrap.php';
  * @request curl -X GET http://localhost/slim-structure/book
  */
 $app->get('/book', function (Request $request, Response $response) use ($app) {
-   
     $entityManager = $this->get('em');
     $booksRepository = $entityManager->getRepository('App\Models\Entity\Book');
     $books = $booksRepository->findAll();
@@ -26,7 +25,13 @@ $app->get('/book/{id}', function (Request $request, Response $response) use ($ap
     $id = $route->getArgument('id');
     $entityManager = $this->get('em');
     $booksRepository = $entityManager->getRepository('App\Models\Entity\Book');
-    $book = $booksRepository->find($id);        
+    $book = $booksRepository->find($id); 
+    /**
+     * Verifica se existe um livro com a ID informada
+     */
+    if (!$book) {
+        throw new \Exception("Book not Found", 404);
+    }       
     $return = $response->withJson($book, 200)
         ->withHeader('Content-type', 'application/json');
     return $return;
@@ -74,6 +79,12 @@ $app->put('/book/{id}', function (Request $request, Response $response) use ($ap
     $booksRepository = $entityManager->getRepository('App\Models\Entity\Book');
     $book = $booksRepository->find($id);   
     /**
+     * Verifica se existe um livro com a ID informada
+     */
+    if (!$book) {
+        throw new \Exception("Book not Found", 404);
+    }   
+    /**
      * Atualiza e Persiste o Livro com os parâmetros recebidos no request
      */
     $book->setName($request->getParam('name'))
@@ -104,6 +115,12 @@ $app->delete('/book/{id}', function (Request $request, Response $response) use (
     $entityManager = $this->get('em');
     $booksRepository = $entityManager->getRepository('App\Models\Entity\Book');
     $book = $booksRepository->find($id);   
+    /**
+     * Verifica se existe um livro com a ID informada
+     */
+    if (!$book) {
+        throw new \Exception("Book not Found", 404);
+    }     
     /**
      * Remove a entidade
      */

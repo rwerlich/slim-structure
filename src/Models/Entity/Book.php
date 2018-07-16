@@ -39,17 +39,29 @@ class Book {
         return $this->author;
     }    
     /**
-     * @return Book()
+     * @return App\Models\Entity\Book
      */
     public function setName($name){
+        if (!$name && !is_string($name)) {
+            throw new \InvalidArgumentException("Book name is required", 400);
+        }
         $this->name = $name;
         return $this;  
     }
      /**
-     * @return Book()
+     * @return App\Models\Entity\Book
      */
     public function setAuthor($author) {
+        if (!$author && !is_string($author)) {
+            throw new \InvalidArgumentException("Author is required", 400);
+        }
         $this->author = $author;
         return $this;
+    }
+    /**
+     * @return App\Models\Entity\Book
+     */
+    public function getValues() {
+        return get_object_vars($this);
     }
 }
