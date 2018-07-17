@@ -33,6 +33,18 @@ $container['errorHandler'] = function ($c) {
 };
 
 /**
+ * Converte os Exceptions de Erros 404 - Not Found
+ */
+$container['notFoundHandler'] = function ($container) {
+    return function ($request, $response) use ($container) {
+        return $container['response']
+            ->withStatus(404)
+            ->withHeader('Content-Type', 'Application/json')
+            ->withJson(['message' => 'Page not found']);
+    };
+};
+
+/**
  * Serviço de Logging em Arquivo
  */
 $container['logger'] = function($container) {
@@ -44,6 +56,20 @@ $container['logger'] = function($container) {
     $logger->pushHandler($fingersCrossed);
     
     return $logger;
+};
+
+/**
+ * Converte os Exceptions de Erros 405 - Not Allowed
+ */
+$container['notAllowedHandler'] = function ($c) {
+    return function ($request, $response, $methods) use ($c) {
+        return $c['response']
+            ->withStatus(405)
+            ->withHeader('Allow', implode(', ', $methods))
+            ->withHeader('Content-Type', 'Application/json')
+            ->withHeader("Access-Control-Allow-Methods", implode(",", $methods))
+            ->withJson(["message" => "Method not Allowed; Method must be one of: " . implode(', ', $methods)], 405);
+    };
 };
 
 
