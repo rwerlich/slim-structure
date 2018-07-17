@@ -2,6 +2,7 @@
 use App\Models\Entity\Book;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
+use Firebase\JWT\JWT;
 require 'bootstrap.php';
 
 /**
@@ -146,4 +147,20 @@ $app->delete('/book/{id}', function (Request $request, Response $response) use (
         ->withHeader('Content-type', 'application/json');
     return $return;
 });
+
+/**
+ * HTTP Auth - Autenticação minimalista para retornar um JWT
+ * curl -u root:toor -X GET http://localhost/slim-structure/auth
+ */
+$app->get('/auth', function (Request $request, Response $response) use ($app) {
+    $key = $this->get("secretkey");
+    $token = array(
+        "user" => "werlivh",
+        "github" => "https://github.com/rwerlich"
+    );
+    $jwt = JWT::encode($token, $key);
+    return $response->withJson(["auth-jwt" => $jwt], 200)
+        ->withHeader('Content-type', 'application/json');   
+});
+
 $app->run();
