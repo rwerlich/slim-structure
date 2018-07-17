@@ -2,6 +2,9 @@
 require './vendor/autoload.php';
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
+use Psr7Middlewares\Middleware\TrailingSlash;
+use Monolog\Logger;
+
 /**
  * Configurações
  */
@@ -28,6 +31,23 @@ $container['errorHandler'] = function ($c) {
             ->withJson(["message" => $exception->getMessage()], $statusCode);
     };
 };
+
+/**
+ * Serviço de Logging em Arquivo
+ */
+$container['logger'] = function($container) {
+    $logger = new Monolog\Logger('books-microservice');
+    $logfile = __DIR__ . '/log/books-microservice.log';
+    $stream = new Monolog\Handler\StreamHandler($logfile, Monolog\Logger::DEBUG);
+    $fingersCrossed = new Monolog\Handler\FingersCrossedHandler(
+        $stream, Monolog\Logger::INFO);
+    $logger->pushHandler($fingersCrossed);
+    
+    return $logger;
+};
+
+
+
 $isDevMode = true;
 /**
  * Diretório de Entidades e Metadata do Doctrine
@@ -49,3 +69,10 @@ $entityManager = EntityManager::create($conn, $config);
  */
 $container['em'] = $entityManager;
 $app = new \Slim\App($container);
+
+/**
+ * @Middleware Tratamento da / do Request 
+ * true - Adiciona a / no final da URL
+ * false - Remove a / no final da URL
+ */
+$app->add(new TrailingSlash(false));
