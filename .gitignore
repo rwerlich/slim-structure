@@ -1,3 +1,5 @@
 db.sqlite
 vendor
 log
+composer.lock
+.idea/

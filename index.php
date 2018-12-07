@@ -1,9 +1,18 @@
 <?php
-use App\Models\Entity\Book;
+use \App\Models\Entity\Book;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
-use Firebase\JWT\JWT;
 require 'bootstrap.php';
+
+/**
+ * Lista de todos os livros
+ * @request curl -X GET http://localhost/slim-structure/book
+ */
+$app->get('/', function (Request $request, Response $response) use ($app) {
+    phpinfo();
+    return 'ola';
+});
+/**
 
 /**
  * Lista de todos os livros

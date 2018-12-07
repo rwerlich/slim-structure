@@ -1,11 +1,8 @@
 <?php
-require './vendor/autoload.php';
+require 'vendor/autoload.php';
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
-use Psr7Middlewares\Middleware\TrailingSlash;
 use Monolog\Logger;
-use Tuupola\Middleware\HttpBasicAuthentication;
-use Tuupola\Middleware\JwtAuthentication;
 
 
 /**
@@ -48,20 +45,6 @@ $container['notFoundHandler'] = function ($container) {
 };
 
 /**
- * Serviço de Logging em Arquivo
- */
-$container['logger'] = function($container) {
-    $logger = new Monolog\Logger('books-microservice');
-    $logfile = __DIR__ . '/log/books-microservice.log';
-    $stream = new Monolog\Handler\StreamHandler($logfile, Monolog\Logger::DEBUG);
-    $fingersCrossed = new Monolog\Handler\FingersCrossedHandler(
-        $stream, Monolog\Logger::INFO);
-    $logger->pushHandler($fingersCrossed);
-    
-    return $logger;
-};
-
-/**
  * Converte os Exceptions de Erros 405 - Not Allowed
  */
 $container['notAllowedHandler'] = function ($c) {
@@ -75,73 +58,19 @@ $container['notAllowedHandler'] = function ($c) {
     };
 };
 
-
-
 $isDevMode = true;
-/**
- * Diretório de Entidades e Metadata do Doctrine
- */
 $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/src/Models/Entity"), $isDevMode);
-/**
- * Array de configurações da nossa conexão com o banco
- */
-$conn = array(
-    'driver' => 'pdo_sqlite',
-    'path' => __DIR__ . '/db.sqlite',
-);
-/**
- * Instância do Entity Manager
- */
-$entityManager = EntityManager::create($conn, $config);
-/**
- * Coloca o Entity manager dentro do container com o nome de em (Entity Manager)
- */
-$container['em'] = $entityManager;
 
-/**
- * Token do nosso JWT
- */
-$container['secretkey'] = "secretloko";
+$conn = [
+    'dbname' => 'api',
+    'user' => 'root',
+    'password' => '',
+    'host' => 'localhost',
+    'driver' => 'pdo_mysql',
+];
+
+$entityManager = EntityManager::create($conn, $config);
+$container['em'] = $entityManager;
 
 $app = new \Slim\App($container);
 
-/**
- * @Middleware Tratamento da / do Request 
- * true - Adiciona a / no final da URL
- * false - Remove a / no final da URL
- */
-$app->add(new TrailingSlash(false));
-
-/**
- * Auth básica HTTP
- */
-$app->add(new HttpBasicAuthentication([
-    /**
-     * Usuários existentes
-     */
-    "users" => [
-        "root" => "toor"
-    ],
-    /**
-     * Blacklist - Deixa todas liberadas e só protege as dentro do array
-     */
-    "path" => ["/auth"],
-    /**
-     * Whitelist - Protege todas as rotas e só libera as de dentro do array
-     */
-    //"passthrough" => ["/auth/liberada", "/admin/ping"],
-]));
-
-/**
- * Auth básica do JWT
- * Whitelist - Bloqueia tudo, e só libera os
- * itens dentro do "passthrough"
- */
-$app->add(new JwtAuthentication([
-    "regexp" => "/(.*)/", //Regex para encontrar o Token nos Headers - Livre
-    "header" => "X-Token", //O Header que vai conter o token
-    "path" => "/", //Vamos cobrir toda a API a partir do /
-    "passthrough" => ["/auth"], //Vamos adicionar a exceção de cobertura a rota /auth
-    "realm" => "Protected", 
-    "secret" => $container['secretkey'] //Nosso secretkey criado 
-]));
