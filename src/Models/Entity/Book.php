@@ -1,7 +1,12 @@
 <?php
 namespace App\Models\Entity;
+
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * @Entity @Table(name="books")
+ * @ORM @Entity(repositoryClass="App\Models\Repository\BookRepository")
  **/
 class Book {
     /**
@@ -65,3 +70,4 @@ class Book {
         return get_object_vars($this);
     }
 }
+

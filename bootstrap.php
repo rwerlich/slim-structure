@@ -72,5 +72,15 @@ $conn = [
 $entityManager = EntityManager::create($conn, $config);
 $container['em'] = $entityManager;
 
+foreach (glob( 'src/Controllers/*.php') as $filename) {
+    $filename = explode('/', $filename);
+    $controller = str_replace('.php', '',end($filename));
+    $container[$controller] = function () use ($controller, $container) {
+        $class = '\\App\\Controllers\\'.$controller;
+        return new $class($container['em']);
+    };
+}
+
+
 $app = new \Slim\App($container);
 
