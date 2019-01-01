@@ -2,17 +2,13 @@
 require 'vendor/autoload.php';
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
-use Monolog\Logger;
 
-
-/**
- * Configurações
- */
 $configs = [
     'settings' => [
         'displayErrorDetails' => true,
     ],
 ];
+
 /**
  * Container Resources do Slim.
  * Aqui dentro dele vamos carregar todas as dependências
@@ -20,6 +16,7 @@ $configs = [
  * da nossa API
  */
 $container = new \Slim\Container($configs);
+
 /**
  * Converte os Exceptions entro da Aplicação em respostas JSON
  */
@@ -69,9 +66,15 @@ $conn = [
     'driver' => 'pdo_mysql',
 ];
 
+/**
+ * Cria o Entity Manager do doctrine
+ */
 $entityManager = EntityManager::create($conn, $config);
 $container['em'] = $entityManager;
 
+/**
+ * Carrega os Controllers pra dentro do Slim
+ */
 foreach (glob( 'src/Controllers/*.php') as $filename) {
     $filename = explode('/', $filename);
     $controller = str_replace('.php', '',end($filename));
