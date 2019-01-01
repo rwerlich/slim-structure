@@ -3,10 +3,42 @@
 namespace App\Models\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use App\Models\Entity\Book;
 
 
 class BookRepository extends EntityRepository
 {
+
+    public function create(Book $entity)
+    {
+        try {
+            $this->em->persist($entity);
+            $this->em->flush();
+            return $entity;
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+    public function update(Book $entity)
+    {
+        try {
+            $this->em->merge($entity);
+            $this->em->flush();
+            return $entity;
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+    public function delete(Book $entity)
+    {
+        try {
+            $this->em->remove($entity);
+            $this->em->flush();
+            return $entity;
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
+    }
 
     public function customSearch(int $id)
     {

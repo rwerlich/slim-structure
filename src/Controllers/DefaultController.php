@@ -7,15 +7,11 @@ use Doctrine\ORM\EntityManager;
 abstract class DefaultController
 {
 
-    private $doctrine;
+    protected $em;
 
-    public function __construct(EntityManager $doctrine)
+    public function __construct(EntityManager $entityManager)
     {
-        $this->doctrine = $doctrine;
-    }
-
-    public function getDoctrine(){
-        return $this->doctrine;
+        $this->em = $entityManager;
     }
 
 }

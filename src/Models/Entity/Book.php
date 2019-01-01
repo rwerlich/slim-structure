@@ -14,17 +14,17 @@ class Book {
      * @Id @Column(type="integer") 
      * @GeneratedValue
      */
-    public $id;
+    private $id;
     /**
      * @var string
      * @Column(type="string") 
      */
-    public $name;
+    private $name;
     /**
      * @var string
      * @Column(type="string") 
      */
-    public $author;
+    private $author;
     /**
      * @return int id
      */
