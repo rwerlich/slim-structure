@@ -15,7 +15,6 @@ $app->put('/books/{id}', function (Request $request, Response $response) use ($a
     return $this->BookController->save($request, $response);
 });
 
-
 $app->delete('/books/{id}', function (Request $request, Response $response) use ($app) {
     return $this->BookController->delete($request, $response);
 });
