@@ -8,11 +8,11 @@ use Doctrine\ORM\EntityRepository;
 class BookRepository extends EntityRepository
 {
 
-    public function customSearch()
+    public function customSearch(int $id)
     {
-        $id = 1;
-        //$this->getEntityManager()->createQuery('sql')->setParameter('id', $id)->getResult();
-        return 0;
+        $query = $this->em->createQuery('SELECT b FROM App\\Models\\Entity\\Book b WHERE b.id = :id');
+        $query->setParameters(['id' => $id]);
+        return $query->getResult();
     }
 
 }
