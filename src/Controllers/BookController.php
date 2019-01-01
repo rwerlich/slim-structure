@@ -9,7 +9,6 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 class BookController extends DefaultController
 {
 
-
     public function find(Request $request, Response $response)
     {
         $id = $request->getAttribute('route')->getArgument('id');
@@ -42,8 +41,7 @@ class BookController extends DefaultController
         }
         $book->setName($params['name'])
             ->setAuthor($params['author']);
-        $entityManager->persist($book);
-        $entityManager->flush();
+        $book = $booksRepository->save($book);
         return $response->withJson($book, 201)
             ->withHeader('Content-type', 'application/json');
     }
@@ -56,8 +54,7 @@ class BookController extends DefaultController
         if (!$book) {
             throw new \Exception("Book not Found", 404);
         }
-        $entityManager->remove($book);
-        $entityManager->flush();
+        $booksRepository->delete($book);
         return $response->withJson(['msg' => "Deletando o livro {$id}"], 204)
             ->withHeader('Content-type', 'application/json');
     }

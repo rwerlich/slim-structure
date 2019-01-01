@@ -9,7 +9,7 @@ use App\Models\Entity\Book;
 class BookRepository extends EntityRepository
 {
 
-    public function create(Book $entity)
+    public function save(Book $entity)
     {
         try {
             $this->em->persist($entity);
@@ -19,16 +19,7 @@ class BookRepository extends EntityRepository
             echo $e->getMessage();
         }
     }
-    public function update(Book $entity)
-    {
-        try {
-            $this->em->merge($entity);
-            $this->em->flush();
-            return $entity;
-        } catch (Exception $e) {
-            echo $e->getMessage();
-        }
-    }
+
     public function delete(Book $entity)
     {
         try {
