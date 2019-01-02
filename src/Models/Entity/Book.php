@@ -63,11 +63,5 @@ class Book {
         $this->author = $author;
         return $this;
     }
-    /**
-     * @return App\Models\Entity\Book
-     */
-    public function getValues() {
-        return get_object_vars($this);
-    }
 }
 

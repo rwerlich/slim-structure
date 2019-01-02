@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Entity\Book;
+use App\Helpers\Book as BookHelper;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -15,14 +16,14 @@ class BookController extends DefaultController
         $booksRepository = $this->em->getRepository(Book::class);
         if(!$id){
             $books = $booksRepository->findAll();
-            return $response->withJson($books, 200)
+            return $response->withJson(BookHelper::toArray($books), 200)
                 ->withHeader('Content-type', 'application/json');
         }
         $book = $booksRepository->find($id);
         if (!$book) {
             throw new \Exception("Book not Found", 404);
         }
-        return $response->withJson($book, 200)
+        return $response->withJson(BookHelper::toArray([$book]), 200)
             ->withHeader('Content-type', 'application/json');
     }
 
@@ -55,7 +56,7 @@ class BookController extends DefaultController
             throw new \Exception("Book not Found", 404);
         }
         $booksRepository->delete($book);
-        return $response->withJson(['msg' => "Deletando o livro {$id}"], 204)
+        return $response->withJson(['msg' => "Book deleted {$id}"], 204)
             ->withHeader('Content-type', 'application/json');
     }
 
